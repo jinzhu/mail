@@ -12,7 +12,7 @@ type Mailer struct {
 }
 
 func (s *Mailer) clone() *Mailer {
-	return &Mailer{s.Mail.clone()}
+	return &Mailer{Mail: s.Mail.clone()}
 }
 
 func (m *Mailer) boundary() string {

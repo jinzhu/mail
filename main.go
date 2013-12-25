@@ -13,27 +13,27 @@ func Setup() *Mailer {
 
 func (m *Mailer) From(value string) *Mailer {
 	m.Mail.From = value
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) To(values ...string) *Mailer {
 	m.Mail.To = append(m.Mail.To, values...)
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Cc(values ...string) *Mailer {
 	m.Mail.Cc = append(m.Mail.Cc, values...)
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Bcc(values ...string) *Mailer {
 	m.Mail.Bcc = append(m.Mail.Bcc, values...)
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Subject(value string) *Mailer {
 	m.Mail.Subject = value
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Body(values ...interface{}) *Mailer {
@@ -47,13 +47,13 @@ func (m *Mailer) Body(values ...interface{}) *Mailer {
 			m.Mail.Error = errors.New(fmt.Sprint("Unknown body value", value))
 		}
 	}
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Header(key, value string) *Mailer {
 	header := Header{Key: key, Value: value}
 	m.Mail.Headers = append(m.Mail.Headers, header)
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Attach(attachment interface{}) *Mailer {
@@ -67,12 +67,12 @@ func (m *Mailer) Attach(attachment interface{}) *Mailer {
 	if attach, ok := attachment.(Attachment); ok {
 		m.Mail.Attachments = append(m.Mail.Attachments, attach)
 	}
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Charset(str string) *Mailer {
 	m.Mail.Charset = str
-	return m
+	return m.clone()
 }
 
 func (m *Mailer) Send() error {

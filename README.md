@@ -1,21 +1,16 @@
 # Mail
 
-mail.SetupSMTP()
-// location: '/usr/sbin/sendmail', arguments: '-i -t'
-// address:              'smtp.gmail.com', port:                 587, domain:               'example.com', user_name:            '<username>', password:             '<password>', authentication:       'plain', enable_starttls_auto: true
-// preview
-// drop
+(A Go Email Utility, still under development...)
 
-mail.To("wosmvp@gmail.com").From("shop@lacoste.jp").Subject("hello").Body("test", {{template}}).Params(interface{}).Header()
+## USAGE
 
-Header(key, value)
-Attachment(filename, file, mime_type: ,encoding: ,content, inline)
-
-Attachment().URL()
-
-
-err := mail.Send()
-err := mail.Preview()
-
-
-mail.To("wosmvp@gmail.com").From("shop@lacoste.jp").Subject("hello").Body("test", {{template}}).Params(interface{}).Header()
+```go
+mail.From("from@example.com").
+To("to1@example.com", "to2@example.com").
+Subject("hello").
+Body("test").
+Body(mail.Body{Value: "<div>hello world</div>", ContentType: "text/html; charset=UTF-8"}).
+Attach("report.csv").
+Attach(mail.Attachment{FileName: "report2.csv", Content: filebytes}).  // filebytes, _ := ioutil.ReadFile("report.csv")
+Send()
+```

@@ -11,20 +11,6 @@ func Setup() *Mailer {
 	return &Mailer{}
 }
 
-type Mail struct {
-	Charset                 string
-	ContentTransferEncoding string
-	Error                   error
-	From                    string
-	To                      []string
-	Cc                      []string
-	Bcc                     []string
-	Subject                 string
-	Bodys                   []Body
-	Headers                 []Header
-	Attachments             []Attachment
-}
-
 func (m *Mailer) From(value string) *Mailer {
 	m.Mail.From = value
 	return m

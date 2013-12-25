@@ -11,6 +11,10 @@ type Mailer struct {
 	Boundary string
 }
 
+func (s *Mailer) clone() *Mailer {
+	return &Mailer{s.Mail.clone()}
+}
+
 func (m *Mailer) boundary() string {
 	if len(m.Boundary) == 0 {
 		m.Boundary = fmt.Sprintf("_mimepart_%v", time.Now().UnixNano())

@@ -3,6 +3,8 @@ package mail
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 )
 
 func Setup() *Mailer {
@@ -10,16 +12,17 @@ func Setup() *Mailer {
 }
 
 type Mail struct {
-	Charset     string
-	Error       error
-	From        string
-	To          []string
-	Cc          []string
-	Bcc         []string
-	Subject     string
-	Bodys       []Body
-	Headers     []Header
-	Attachments []Attachment
+	Charset                 string
+	ContentTransferEncoding string
+	Error                   error
+	From                    string
+	To                      []string
+	Cc                      []string
+	Bcc                     []string
+	Subject                 string
+	Bodys                   []Body
+	Headers                 []Header
+	Attachments             []Attachment
 }
 
 func (m *Mailer) From(value string) *Mailer {
@@ -67,8 +70,17 @@ func (m *Mailer) Header(key, value string) *Mailer {
 	return m
 }
 
-func (m *Mailer) Attachment(attachment Attachment) *Mailer {
-	m.Mail.Attachments = append(m.Mail.Attachments, attachment)
+func (m *Mailer) Attach(attachment interface{}) *Mailer {
+	if filename, ok := attachment.(string); ok {
+		b, err := ioutil.ReadFile(filename)
+		if err != nil {
+			m.Mail.Error = err
+		}
+		attachment = Attachment{Content: b, FileName: filepath.Base(filename)}
+	}
+	if attach, ok := attachment.(Attachment); ok {
+		m.Mail.Attachments = append(m.Mail.Attachments, attach)
+	}
 	return m
 }
 

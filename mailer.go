@@ -13,7 +13,7 @@ type Mailer struct {
 
 func (m *Mailer) boundary() string {
 	if len(m.Boundary) == 0 {
-		m.Boundary = fmt.Sprintf("_mimepart_%s", time.Now().UnixNano())
+		m.Boundary = fmt.Sprintf("_mimepart_%v", time.Now().UnixNano())
 	}
 	return m.Boundary
 }
@@ -22,14 +22,14 @@ func (m *Mailer) crlfBoundary() string {
 	if len(m.contentType()) == 0 {
 		return ""
 	}
-	return fmt.Sprintf("--%s\r\n", m.boundary())
+	return fmt.Sprintf("\r\n--%v\r\n", m.boundary())
 }
 
 func (m *Mailer) endBoundary() string {
 	if len(m.contentType()) == 0 {
 		return ""
 	}
-	return fmt.Sprintf("--%s--\r\n", m.boundary())
+	return fmt.Sprintf("\r\n--%v--\r\n", m.boundary())
 }
 
 func (m *Mailer) charset() string {

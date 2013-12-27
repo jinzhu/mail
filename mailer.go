@@ -2,6 +2,7 @@ package mail
 
 import (
 	"fmt"
+	"net/mail"
 	"strings"
 	"time"
 )
@@ -63,11 +64,33 @@ func (m *Mailer) contentTransferEncoding() string {
 }
 
 func (m *Mailer) String() (string, error) {
-	message, mail, header := "", m.Mail, make(map[string]string)
+	message, header := "", make(map[string]string)
 
-	header["From"] = mail.From
-	header["To"] = strings.Join(mail.To, ",")
-	header["Subject"] = mail.Subject
+	headers := map[string][]string{
+		"From": []string{m.Mail.From},
+		"To":   m.Mail.To,
+		"Cc":   m.Mail.Cc,
+		"Bcc":  m.Mail.Bcc,
+	}
+
+	for key, addresses := range headers {
+		formated_addresses := []string{}
+		for _, address := range addresses {
+			parsed_addresses, err := mail.ParseAddressList(address)
+			if err == nil {
+				for _, parsed_address := range parsed_addresses {
+					if len(parsed_address.Name) > 0 {
+						formated_addresses = append(formated_addresses, fmt.Sprintf("%v <%v>", parsed_address.Name, parsed_address.Address))
+					} else {
+						formated_addresses = append(formated_addresses, fmt.Sprintf("%v", parsed_address.Address))
+					}
+				}
+			}
+		}
+		header[key] = strings.Join(formated_addresses, ", ")
+	}
+
+	header["Subject"] = m.Mail.Subject
 	header["MIME-Version"] = "1.0"
 	header["Content-Type"] = m.contentType()
 	header["Content-Transfer-Encoding"] = m.contentTransferEncoding()
